@@ -1,0 +1,40 @@
+/** @format */
+
+#stopwatchContainer {
+  display: block;
+  text-align: center;
+  border: 2px solid #eee;
+  margin: 8px auto;
+  width: 512px;
+}
+
+#timerText {
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: #000;
+  color: #0f0;
+}
+
+#inputTime {
+  width: 250px;
+  height: 25px;
+  border: 1px solid grey;
+  margin: 2px;
+  padding: 2px;
+}
+
+#menu {
+  margin: 8px 0px;
+}
+
+#timesTracked {
+  border: 1px dashed #999;
+}
+
+#timesTracked div {
+  border-bottom: 1px dotted #999;
+}
+
+#timesTracked div:last-child {
+  border-bottom: 0px;
+}
