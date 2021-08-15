@@ -1,7 +1,7 @@
 /** @format */
 
 document.addEventListener("DOMContentLoaded", function () {
-  var state = {
+  const state = {
     timerText: "0m0s0ms",
     timerInterval: null,
     timerStarted: false,
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateDOMTimer() {
     if (!state.domTimerText) {
-      var domTimerText = document.getElementById("timerText");
+      const domTimerText = document.getElementById("timerText");
       state.domTimerText = domTimerText;
       state.domTimerText.innerHTML = state.timerText;
     } else {
@@ -57,10 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateDOMTimesTracked() {
-    var domTimesTracked = document.getElementById("timesTracked");
+    const domTimesTracked = document.getElementById("timesTracked");
     domTimesTracked.innerHTML = "";
     state.timesTracked.forEach((val, ind) => {
-      var tempDOMdiv = document.createElement("div");
+      const tempDOMdiv = document.createElement("div");
       tempDOMdiv.innerHTML = val;
       domTimesTracked.insertBefore(tempDOMdiv, domTimesTracked.firstChild);
     });
@@ -80,53 +80,86 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function parseTimeString(string) {
-    const str1 = string.split("ms");
-    const str2 = str1[0].split("m");
-    let min = parseInt(str2[0], 10);
-    const str3 = str2[1].split("s");
-    let sec = parseInt(str3[0], 10);
-    let mili = parseInt(str3[1], 10);
+    const length = string.length;
+    const str = string;
 
-    return min * 60 * 1000 + sec * 1000 + mili;
+    let m = 0;
+    let s = 0;
+    let ms = 0;
+    let num = "";
+
+    for (let i = 0; i < length; i++) {
+      if (str[i] === "m" && str[i + 1] !== "s") {
+        m = parseInt(num);
+        num = "";
+        continue;
+      } else if (str[i] === "s" && str[i - 1] !== "m") {
+        s = parseInt(num);
+        num = "";
+        continue;
+      } else if (str[i] === "m" && str[i + 1] === "s") {
+        ms = parseInt(num);
+        num = "";
+        break;
+      }
+
+      num += str[i];
+    }
+
+    return parseInt(m, 10) * 60 * 1000 + parseInt(s, 10) * 1000 + parseInt(ms);
   }
 
   function initStopwatch() {
-    const RKEY = 82,
-      SKEY = 83,
-      TKEY = 84;
+    // const RKEY = "KeyR";
+    // const SKEY = "KeyS";
+    // const TKEY = "KeyT";
 
     const inputSubmitButton = document.getElementById("inputButton");
 
-    inputSubmitButton.addEventListener("click", function (event) {
-      // setTimerText(0.0);
+    inputSubmitButton.addEventListener("click", function () {
       resetTimer();
 
       const input = document.getElementById("inputTime");
 
-      const time = parseTimeString(input.value);
+      const value = input.value;
 
-      setTimerText(time);
+      // validate input
+      if (value.includes("m") || value.includes("s") || value.includes("ms")) {
+        const time = parseTimeString(value);
+
+        setTimerText(time);
+      } else {
+        alert("Invalid Input");
+      }
     });
 
-    var domStartStopBut = document.getElementById("startStopBut");
-    var domResetBut = document.getElementById("resetBut");
-    var domRecordTimeBut = document.getElementById("recordTimeBut");
+    const domStartStopBut = document.getElementById("startStopBut");
+    const domResetBut = document.getElementById("resetBut");
+    const domRecordTimeBut = document.getElementById("recordTimeBut");
+
     domStartStopBut.addEventListener("click", toggleTimer);
     domResetBut.addEventListener("click", resetTimer);
     domRecordTimeBut.addEventListener("click", setTimesTracked);
-    document.addEventListener("keydown", function (e) {
-      switch (e.keyCode) {
-        case SKEY:
-          toggleTimer();
-          break;
-        case RKEY:
-          resetTimer();
-          break;
-        case TKEY:
-          setTimesTracked();
-          break;
-      }
-    });
+    
+    // NOTE: disabling this now, because while typing input with 's' or 'ms',
+    // functions are getting fired.
+    // document.addEventListener("keydown", function (e) {
+    //   switch (e.code) {
+    //     case SKEY: {
+    //       toggleTimer();
+    //       break;
+    //     }
+    //     case RKEY: {
+    //       resetTimer();
+    //       break;
+    //     }
+    //     case TKEY: {
+    //       setTimesTracked();
+    //       break;
+    //     }
+    //   }
+    // });
+
     setTimerText(0.0);
   }
 
